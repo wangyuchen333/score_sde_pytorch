@@ -1,9 +1,4 @@
-## What does this code do?
-Aside from the **NCSN++** and **DDPM++** models in our paper, this codebase also re-implements many previous score-based models in one place, including **NCSN** from [Generative Modeling by Estimating Gradients of the Data Distribution](https://arxiv.org/abs/1907.05600), **NCSNv2** from [Improved Techniques for Training Score-Based Generative Models](https://arxiv.org/abs/2006.09011), and **DDPM** from [Denoising Diffusion Probabilistic Models](https://arxiv.org/abs/2006.11239). 
 
-It supports training new models, evaluating the sample quality and likelihoods of existing models. We carefully designed the code to be modular and easily extensible to new SDEs, predictors, or correctors.
-
-## **Integration with 🤗 Diffusers library**
 
 Most models are now also available in 🧨 Diffusers and accesible via the [ScoreSdeVE pipeline](https://huggingface.co/docs/diffusers/api/pipelines/score_sde_ve).
 
