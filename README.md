@@ -1,7 +1,3 @@
-以下是您提供的内容翻译成中文：
-
----
-
 大多数模型现在也可以在 🧨 Diffusers 中使用，并通过 [ScoreSdeVE 管道](https://huggingface.co/docs/diffusers/api/pipelines/score_sde_ve) 访问。
 
 Diffusers 允许您仅用几行代码在 PyTorch 中测试基于分数的 SDE 模型。
@@ -103,3 +99,32 @@ main.py:
 | [`vp/cifar10_ddpm_continuous`](https://drive.google.com/drive/folders/1RHNxW1qY-mTr0JMAE5t4V181Hi_aVWXK?usp=sharing) | - | - | 3.69| 3.21 |
 | [`vp/cifar10_ddpmpp`](https://drive.google.com/drive/folders/1zOVj03ZBcq339p5QEKJPh2bBrxR_HOCM?usp=sharing) | 2.78 | 9.64 | - | - |
 | [`vp/cifar10_ddpmpp_continuous`](https://drive.google.com/drive/folders/1xYjVMx10N9ivQQBIsEoXEeu9nvSGTBrC?usp=sharing) | 2.55 | 9.58 | 3.93 | 
+
+3.16 |
+| [`vp/cifar10_ddpmpp_deep_continuous`](https://drive.google.com/drive/folders/1ZMLBiu9j7-rpdTQu8M2LlHAEQq4xRYrj?usp=sharing) | 2.41 | 9.68 | 3.08 | 3.13 |
+| [`subvp/cifar10_ddpm_continuous`](https://drive.google.com/drive/folders/1DeebpmBkCxlZx89t3z45Te37T7BPOzd2?usp=sharing) | - | - | 3.56 | 3.05 |
+| [`subvp/cifar10_ddpmpp_continuous`](https://drive.google.com/drive/folders/1bLgmnEAZnysRZfWt8qN3omGfijJ_B884?usp=sharing) | 2.61 | 9.56 | 3.16 | 3.02 |
+| [`subvp/cifar10_ddpmpp_deep_continuous`](https://drive.google.com/drive/folders/16QGkviGcizSbIPRk37-YksUhlNIna4Ys?usp=sharing) | 2.41 | 9.57 | **2.92** | **2.99** |
+
+| 检查点路径 | 样本 |
+|:-----|:------:|
+| [`ve/bedroom_ncsnpp_continuous`](https://drive.google.com/drive/folders/18GmxDvfGR8se9uFucc9uweeVrX_GzuUG?usp=sharing) | ![bedroom_samples](assets/bedroom.jpeg) |
+| [`ve/church_ncsnpp_continuous`](https://drive.google.com/drive/folders/1zVChA0HrnJU66Jkt4P6KOnlREhBMc4Yh?usp=sharing) | ![church_samples](assets/church.jpeg) |
+| [`ve/ffhq_1024_ncsnpp_continuous`](https://drive.google.com/drive/folders/1ZqLNr_kH0o9DxvwSlrQPMmkrhEnXhBm2?usp=sharing) |![ffhq_1024](assets/ffhq_1024.jpeg)|
+| [`ve/ffhq_256_ncsnpp_continuous`](https://drive.google.com/drive/folders/1KG72ZKUCUa8dDcA03hOf1BsnK8kBcdPD?usp=sharing) |![ffhq_256_samples](assets/ffhq_256.jpg)|
+| [`ve/celebahq_256_ncsnpp_continuous`](https://drive.google.com/drive/folders/19VJ7UZTE-ytGX6z5rl-tumW9c0Ps3itk?usp=sharing) |![celebahq_256_samples](assets/celebahq_256.jpg)|
+
+
+## 演示和教程
+| 链接 | 描述 |
+|:----:|:-----|
+|[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1dRR_0gNRmfLtPavX2APzUggBuXyjWW55?usp=sharing)  | 加载我们的预训练检查点并玩转采样、似然计算和可控合成（JAX + FLAX）|
+|[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17lTrPLTt_0EDXa4hkbHmbAFQEkpRDZnh?usp=sharing) | 加载我们的预训练检查点并玩转采样、似然计算和可控合成（PyTorch） |
+|[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1SeXMpILhkJPjXUaesvzEhc3Ke6Zl_zxJ?usp=sharing) | JAX + FLAX 中基于分数的生成模型教程 |
+|[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/120kYYBOVa1i0TD85RjlEkFjaWDxSFUx3?usp=sharing)| PyTorch 中基于分数的生成模型教程 |
+
+
+## 小贴士
+* 当使用 JAX 代码库时，您可以将多个训练步骤合并以提高训练速度，代价是占用更多内存。这可以通过 `config.training.n_jitted_steps` 设置。对于 CIFAR-10，我们建议在您的 GPU/TPU 具有足够内存时使用 `config.training.n_jitted_steps=5`；否则建议使用 `config.training.n_jitted_steps=1`。我们当前的实现要求 `config.training.log_freq` 必须能被 `n_jitted_steps` 整除，以便正常记录和检查点。
+* `LangevinCorrector` 的 `snr`（信噪比）参数在某种程度上表现得像温度参数。较大的 `snr` 通常会导致更平滑的样本，而较小的 `snr` 则会产生更多样但质量较低的样本。`snr` 的典型值为 `0.05 - 0.2`，需要调优以找到最佳平衡点。
+* 对于 VE SDE，我们建议选择 `config.model.sigma_max` 为训练数据集中数据样本之间的最大成对距离。
