@@ -39,10 +39,6 @@ main.py:
 
   这些功能可以通过配置文件进行配置，或者通过 `ml_collections` 包的命令行支持更方便地进行配置。例如，要生成样本并评估样本质量，提供 `--config.eval.enable_sampling` 标志；要计算对数似然，提供 `--config.eval.enable_bpd` 标志，并指定 `--config.eval.dataset=train/test` 以指示是否在训练或测试数据集上计算对数似然。
 
-## 如何扩展代码
-* **新 SDEs**：继承 `sde_lib.SDE` 抽象类并实现所有抽象方法。`discretize()` 方法是可选的，默认是 Euler-Maruyama 离散化。现有的采样方法和似然计算将自动适用于此新 SDE。
-* **新预测器**：继承 `sampling.Predictor` 抽象类，实现 `update_fn` 抽象方法，并用 `@register_predictor` 注册其名称。新的预测器可以直接用于 `sampling.get_pc_sampler` 进行预测-校正采样，以及所有其他在 `controllable_generation.py` 中的可控生成方法。
-* **新校正器**：继承 `sampling.Corrector` 抽象类，实现 `update_fn` 抽象方法，并用 `@register_corrector` 注册其名称。新的校正器可以直接用于 `sampling.get_pc_sampler`，以及所有其他在 `controllable_generation.py` 中的可控生成方法。
 
 ## 预训练检查点
 所有检查点都提供在此 [Google Drive](https://drive.google.com/drive/folders/1tFmF_uh57O6lx9ggtZT_5LdonVK2cV-e?usp=sharing)。
@@ -54,13 +50,12 @@ main.py:
 以下是检查点及其在论文中报告的结果的详细列表。**FID (ODE)** 对应于应用于概率流 ODE 的黑盒 ODE 解算器的样本质量。
 
 
-## 演示和教程
-| 链接 | 描述 |
-|:----:|:-----|
-|[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17lTrPLTt_0EDXa4hkbHmbAFQEkpRDZnh?usp=sharing) | 加载我们的预训练检查点并玩转采样、似然计算和可控合成（PyTorch） |
-|[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/120kYYBOVa1i0TD85RjlEkFjaWDxSFUx3?usp=sharing)| PyTorch 中基于分数的生成模型教程 |
-
-
 ## 小贴士
 * `LangevinCorrector` 的 `snr`（信噪比）参数在某种程度上表现得像温度参数。较大的 `snr` 通常会导致更平滑的样本，而较小的 `snr` 则会产生更多样但质量较低的样本。`snr` 的典型值为 `0.05 - 0.2`，需要调优以找到最佳平衡点。
 * 对于 VE SDE，我们建议选择 `config.model.sigma_max` 为训练数据集中数据样本之间的最大成对距离。
+* 
+
+## 如何扩展代码
+* **新 SDEs**：继承 `sde_lib.SDE` 抽象类并实现所有抽象方法。`discretize()` 方法是可选的，默认是 Euler-Maruyama 离散化。现有的采样方法和似然计算将自动适用于此新 SDE。
+* **新预测器**：继承 `sampling.Predictor` 抽象类，实现 `update_fn` 抽象方法，并用 `@register_predictor` 注册其名称。新的预测器可以直接用于 `sampling.get_pc_sampler` 进行预测-校正采样，以及所有其他在 `controllable_generation.py` 中的可控生成方法。
+* **新校正器**：继承 `sampling.Corrector` 抽象类，实现 `update_fn` 抽象方法，并用 `@register_corrector` 注册其名称。新的校正器可以直接用于 `sampling.get_pc_sampler`，以及所有其他在 `controllable_generation.py` 中的可控生成方法。
