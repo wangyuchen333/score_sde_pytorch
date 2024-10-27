@@ -1,22 +1,3 @@
-大多数模型现在也可以在 🧨 Diffusers 中使用，并通过 [ScoreSdeVE 管道](https://huggingface.co/docs/diffusers/api/pipelines/score_sde_ve) 访问。
-
-然后您可以用几行代码尝试这些模型：
-
-```python
-from diffusers import DiffusionPipeline
-
-model_id = "google/ncsnpp-ffhq-1024"
-
-# 加载模型和调度器
-sde_ve = DiffusionPipeline.from_pretrained(model_id)
-
-# 在推理中运行管道（采样随机噪声并去噪）
-image = sde_ve().images[0]
-
-# 保存图像
-image[0].save("sde_ve_generated_image.png")
-```
-
 更多模型可以直接在 [Hub](https://huggingface.co/models?library=diffusers&pipeline_tag=unconditional-image-generation&sort=downloads&search=ncsnpp) 上找到。
 
 ## 如何运行代码
