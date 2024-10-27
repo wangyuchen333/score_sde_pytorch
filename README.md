@@ -1,13 +1,5 @@
 大多数模型现在也可以在 🧨 Diffusers 中使用，并通过 [ScoreSdeVE 管道](https://huggingface.co/docs/diffusers/api/pipelines/score_sde_ve) 访问。
 
-Diffusers 允许您仅用几行代码在 PyTorch 中测试基于分数的 SDE 模型。
-
-您可以按照以下方式安装 Diffusers：
-
-```
-pip install diffusers torch accelerate
-```
-
 然后您可以用几行代码尝试这些模型：
 
 ```python
@@ -29,17 +21,7 @@ image[0].save("sde_ve_generated_image.png")
 
 ## 如何运行代码
 
-### 依赖项
-
-运行以下命令以安装我们的代码所需的一部分 Python 包：
-
-```sh
-pip install -r requirements.txt
-```
-
-### 统计文件用于定量评估
-
-我们提供 CIFAR-10 的统计文件。您可以下载 [`cifar10_stats.npz`](https://drive.google.com/file/d/14UB27-Spi8VjZYKST3ZcT8YVhAluiFWI/view?usp=sharing) 并将其保存到 `assets/stats/`。请查看 [#5](https://github.com/yang-song/score_sde/pull/5) 以了解如何为新数据集计算此统计文件。
+请查看 [#5](https://github.com/yang-song/score_sde/pull/5) 以了解如何为新数据集计算此统计文件。
 
 ### 用法
 
@@ -118,13 +100,10 @@ main.py:
 ## 演示和教程
 | 链接 | 描述 |
 |:----:|:-----|
-|[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1dRR_0gNRmfLtPavX2APzUggBuXyjWW55?usp=sharing)  | 加载我们的预训练检查点并玩转采样、似然计算和可控合成（JAX + FLAX）|
 |[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/17lTrPLTt_0EDXa4hkbHmbAFQEkpRDZnh?usp=sharing) | 加载我们的预训练检查点并玩转采样、似然计算和可控合成（PyTorch） |
-|[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1SeXMpILhkJPjXUaesvzEhc3Ke6Zl_zxJ?usp=sharing) | JAX + FLAX 中基于分数的生成模型教程 |
 |[![在 Colab 中打开](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/120kYYBOVa1i0TD85RjlEkFjaWDxSFUx3?usp=sharing)| PyTorch 中基于分数的生成模型教程 |
 
 
 ## 小贴士
-* 当使用 JAX 代码库时，您可以将多个训练步骤合并以提高训练速度，代价是占用更多内存。这可以通过 `config.training.n_jitted_steps` 设置。对于 CIFAR-10，我们建议在您的 GPU/TPU 具有足够内存时使用 `config.training.n_jitted_steps=5`；否则建议使用 `config.training.n_jitted_steps=1`。我们当前的实现要求 `config.training.log_freq` 必须能被 `n_jitted_steps` 整除，以便正常记录和检查点。
 * `LangevinCorrector` 的 `snr`（信噪比）参数在某种程度上表现得像温度参数。较大的 `snr` 通常会导致更平滑的样本，而较小的 `snr` 则会产生更多样但质量较低的样本。`snr` 的典型值为 `0.05 - 0.2`，需要调优以找到最佳平衡点。
 * 对于 VE SDE，我们建议选择 `config.model.sigma_max` 为训练数据集中数据样本之间的最大成对距离。
