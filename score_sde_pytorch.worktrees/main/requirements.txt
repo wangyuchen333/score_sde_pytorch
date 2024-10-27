@@ -1,0 +1,12 @@
+ml-collections
+tensorflow-gan
+tensorflow_io
+tensorflow_datasets
+tensorflow-macos
+tensorflow-metal
+tensorflow-addons
+tensorboard==2.4.0
+absl-py==0.10.0
+torch>=1.7.0
+torchvision
+ninja
